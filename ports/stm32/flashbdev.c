@@ -41,6 +41,16 @@
 // cache used for writing.
 
 #if defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx)
+#if defined(MICROPY_HW_BIG_MEM)
+
+#define CACHE_MEM_START_ADDR (0x10004000) // CCM data RAM, 48k cache, reserve 16k for stack.
+#define FLASH_SECTOR_SIZE_MAX (0xC000) // 48k max, size of cache
+#define FLASH_MEM_SEG1_START_ADDR (0x08004000) // sector 1
+#define FLASH_MEM_SEG1_NUM_BLOCKS (192) // sectors 1,2,3,4: 16k+16k+16k+48k(of 64k)+48k(of 128k)=96k
+#define FLASH_MEM_SEG2_START_ADDR (0x08020000) // sector 5
+#define FLASH_MEM_SEG2_NUM_BLOCKS (96) // sector 6: 48k(of 128k). Filesystem 96K + 48K = 144K
+
+#else
 
 #define CACHE_MEM_START_ADDR (0x10000000) // CCM data RAM, 64k
 #define FLASH_SECTOR_SIZE_MAX (0x10000) // 64k max, size of CCM
@@ -51,6 +61,8 @@
 #if 0
 #define FLASH_MEM_SEG2_START_ADDR (0x080e0000) // sector 11
 #define FLASH_MEM_SEG2_NUM_BLOCKS (128) // sector 11: 128k
+#endif
+
 #endif
 
 #elif defined(STM32F401xE) || defined(STM32F411xE) || defined(STM32F412Zx) || defined(STM32F446xx)
